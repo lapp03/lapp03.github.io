@@ -1,2 +1,2 @@
 # lapp03.github.io
-My data science portfolio
+My data science portfolio. 

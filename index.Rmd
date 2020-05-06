@@ -1,0 +1,8 @@
+---
+title: "My Senior Project"
+---
+
+#### Week 01-02
+
+During these weeks, I've been able to explore and reflect on what I've learned in my classes as a data science major at BYU-I.
+For my senior project, I decided to apply different data science tecniques and create a project which shows the most important ones I've learned. Thus, in this project I will perform a descriptive statistics analysis and visualizations, linear regression, classification models, and, possibly natural language processing algorithms too. To begin with the first part of the analysis, and create visualizations, I will use a data set found on the internet, Adventure Works Cycles, a fictious, multinational bicycle manufacturer. I will also work on building a porfolio, which will consist of website using R. I will switch to blogdown later in the semester, so I can build a better, more holistic portfolio. 
