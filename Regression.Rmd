@@ -1,0 +1,122 @@
+---
+title: "Regression"
+output: 
+  html_document:
+    theme: journal
+    css: styles.css
+    code_folding: hide
+---
+
+<!-- Here you'll find a general idea of the project https://github.com/folaAj/AdventureWorks/blob/master/Regression.ipynb -->
+
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+This is the part of the project where we will predict the average monthly spent amount based on the info we have. We still don't know which variables we will take into account, we just want to get a predictive model.
+
+```{r load_libraries}
+library(readr)
+library(dbplyr)
+library(ggplot2)
+library(tidyverse)
+library(ggplot2)
+library(readr)
+library(data.table)
+library(DT)
+library(pander)
+library(scales)
+library(cowplot)
+library(shiny)
+library(eeptools)#for changing the DOB to age
+```
+
+We download and clean the data (see the Visualization tab for a detailed explanation of this process).
+```{r}
+customer <- read_csv("~/CS 499 Senior Project/datasets/AdvWorksCusts.csv")
+spend <- read_csv("~/CS 499 Senior Project/datasets/AW_AveMonthSpend.csv")
+bikebuyer <- read_csv("~/CS 499 Senior Project/datasets/AW_BikeBuyer.csv")
+three_datasets <- data.frame(customer, spend, bikebuyer)
+data_clean <- select(three_datasets,-c(CustomerID.1, CustomerID.2))
+missing_values <- sapply(data_clean, function(x) sum(is.na(x))) #it checks number of missing values by column
+data_clean <- select(three_datasets,-c(CustomerID.1, CustomerID.2, Title, MiddleName, Suffix, AddressLine2)) 
+data_clean <- data_clean[!duplicated(data_clean), ] #it removes duplicates
+```
+
+Here's a summary of the data. We can see that there abour 6 continuos variables. Let us remember that our response variable, what we're trying to predict, is the $AveMonthSpend$ variable. 
+```{r}
+pander(summary(data_clean))
+
+```
+
+
+Here you can see the first few rows of the dataset to get a feel of the data. 
+
+```{r}
+head(data_clean)
+```
+
+
+## Finding the predictive model 
+
+Our null hypothesis is that the variation in AveMOnthSpend is due to randomization, and not due to the variation of other variables. In other words, other variables cannot explain the AveMonthSpend. 
+
+Let's start at visualizing the variables. 
+```{r}
+###Let's add up age column using the existing DOB column
+#Change BirthDate from Character to Date format
+data_clean$BirthDate <- as.Date(data_clean$BirthDate, format = "%m/%d/%Y")
+
+#Append the new column called Age
+data_clean$Age <- as.numeric(difftime("1998-01-01",data_clean$BirthDate, units = "weeks"))/52.25
+
+data_qualitative <- data_clean %>% select(11:16)
+data_quantitative <- data_clean %>% select(c(22,16:20))
+plot(data_quantitative)
+```
+
+
+I see some sort of relationship between Age, YearlyIncome, TotalChildren, and NumberChildrenAtHome.
+
+NOTE: We might consider NumberChildrenAtHome as a discrete variable or factor, but I think it's better if we keep it as continuous.
+
+***
+
+As per the qualitative variables, you can refer back to my EDA window. 
+
+(Summary: Categorical features such as occupation, gender, marital status and home owner flag have distinct relationships with average month spend. The quartiles are of different levels. It seems that Males spend more on average than females same for married and homeowners)
+```{r}
+#creating a smaller data frame with the features that seem to play a role
+
+features <- cbind(data_qualitative,data_quantitative)
+head(features)
+```
+
+Let's start with building our model
+
+```{r}
+#We'll use a forward approach. We'll start from most simple to most complex
+
+model1 <- lm(AveMonthSpend ~ YearlyIncome, data = features)
+summary(model1)
+
+model2 <- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome, data = features)
+summary(model2)
+
+model3 <- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + TotalChildren, data = features)
+summary(model3)
+
+model4 <- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + TotalChildren + Age, data = features)
+summary(model4) #Notice how Total Children becomes insignificant!
+
+model5 <- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + Age, data = features)
+summary(model5) 
+
+model6 <- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + Age + NumberCarsOwned, data = features)
+summary(model6) 
+```
+
+
+

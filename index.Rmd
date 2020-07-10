@@ -1,8 +1,28 @@
 ---
-title: "My Senior Project"
+title: "Adventure Works Cycles Data Analysis"
+author: "by Alfredo Peña"
+output: 
+  html_document:
+    theme: journal
+    css: styles.css
 ---
 
-#### Week 01-02
+<!-- (based on the overview section of the Andrew's senior project) -->
+<!-- (find snippets of info here ~ look for the intro page and the about data page https://courses.edx.org/courses/course-v1:Microsoft+DAT275x+1T2020/courseware/a16421c1-b85d-0e60-f1df-b576f06fcbfd/855948ad-95bd-97ba-732d-763d716dd18e/?activate_block_id=block-v1%3AMicrosoft%2BDAT275x%2B1T2020%2Btype%40sequential%2Bblock%40855948ad-95bd-97ba-732d-763d716dd18e) -->
+<!-- (Remember all AdvWorks parts of the senior project are Business Oriented ~ audience is business owner, for instance, while the DS blogs are process oriented ~ audience is a DS students for example). -->
 
-During these weeks, I've been able to explore and reflect on what I've learned in my classes as a data science major at BYU-I.
-For my senior project, I decided to apply different data science tecniques and create a project which shows the most important ones I've learned. Thus, in this project I will perform a descriptive statistics analysis and visualizations, linear regression, classification models, and, possibly natural language processing algorithms too. To begin with the first part of the analysis, and create visualizations, I will use a data set found on the internet, Adventure Works Cycles, a fictious, multinational bicycle manufacturer. I will also work on building a porfolio, which will consist of website using R. I will switch to blogdown later in the semester, so I can build a better, more holistic portfolio. 
+
+## About the Project 
+
+As a senior student majoring in Data Science at Brigham Young University-Idaho, it is expected that I  show and apply the skills I've learned in a capstone project. Because I've not yet been able to work with business datasets per se (and rather my projects have been with other datasets such as house pricing, weather temperature, heights, etc), I want to use this senior project as a way to show what I can do for a business. This senior project will encompass three of the most common and helpful techniques of data science: exploratory data analysis (commonly known as EDA), creating a regression model, and creating a classification model. 
+
+The data source can be found online (https://github.com/amitbasuri/Adventure-Works-Cycle or on Kaggle).
+
+The three sections will incorporate parts of Pythons because I feel I lack the knowledge of how to apply Python in data science problems, and it's a language that is highly demanded for data science jobs. 
+
+
+## About the Company 
+
+In 1998, the Adventure Works Cycles company collected a large volume of data about their existing customers, including demographic features and information about purchases they have made. The company is particularly interested in analyzing customer data to determine any apparent relationships between demographic features known about the customers and the likelihood of a customer purchasing a bike. Additionally, the analysis should endeavor to determine whether a customer's average monthly spend with the company can be predicted from known customer characteristics.
+
+

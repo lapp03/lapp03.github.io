@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Regression</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 61px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h2 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h3 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h4 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h5 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h6 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">CS 499</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+<li>
+  <a href="Visualization.html">Exploratory Data Analysis</a>
+</li>
+<li>
+  <a href="Regression.html">Regression</a>
+</li>
+<li>
+  <a href="Classification.html">Classification</a>
+</li>
+<li>
+  <a href="blogpost1.html">Blog Post 1</a>
+</li>
+<li>
+  <a href="blogpost2.html">Blog Post 2</a>
+</li>
+<li>
+  <a href="progress.html">Progress Insight</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Regression</h1>
+
+</div>
+
+
+<!-- Here you'll find a general idea of the project https://github.com/folaAj/AdventureWorks/blob/master/Regression.ipynb -->
+<p>This is the part of the project where we will predict the average monthly spent amount based on the info we have. We still don’t know which variables we will take into account, we just want to get a predictive model.</p>
+<pre class="r"><code>library(readr)
+library(dbplyr)
+library(ggplot2)
+library(tidyverse)
+library(ggplot2)
+library(readr)
+library(data.table)
+library(DT)
+library(pander)
+library(scales)
+library(cowplot)
+library(shiny)
+library(eeptools)#for changing the DOB to age</code></pre>
+<p>We download and clean the data (see the Visualization tab for a detailed explanation of this process).</p>
+<pre class="r"><code>customer &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AdvWorksCusts.csv&quot;)
+spend &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AW_AveMonthSpend.csv&quot;)
+bikebuyer &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AW_BikeBuyer.csv&quot;)
+three_datasets &lt;- data.frame(customer, spend, bikebuyer)
+data_clean &lt;- select(three_datasets,-c(CustomerID.1, CustomerID.2))
+missing_values &lt;- sapply(data_clean, function(x) sum(is.na(x))) #it checks number of missing values by column
+data_clean &lt;- select(three_datasets,-c(CustomerID.1, CustomerID.2, Title, MiddleName, Suffix, AddressLine2)) 
+data_clean &lt;- data_clean[!duplicated(data_clean), ] #it removes duplicates</code></pre>
+<p>Here’s a summary of the data. We can see that there abour 6 continuos variables. Let us remember that our response variable, what we’re trying to predict, is the <span class="math inline">\(AveMonthSpend\)</span> variable.</p>
+<pre class="r"><code>pander(summary(data_clean))</code></pre>
+<table>
+<caption>Table continues below</caption>
+<colgroup>
+<col width="21%" />
+<col width="26%" />
+<col width="26%" />
+<col width="26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">CustomerID</th>
+<th align="center">FirstName</th>
+<th align="center">LastName</th>
+<th align="center">AddressLine1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Min. :11000</td>
+<td align="center">Length:16421</td>
+<td align="center">Length:16421</td>
+<td align="center">Length:16421</td>
+</tr>
+<tr class="even">
+<td align="center">1st Qu.:15615</td>
+<td align="center">Class :character</td>
+<td align="center">Class :character</td>
+<td align="center">Class :character</td>
+</tr>
+<tr class="odd">
+<td align="center">Median :20228</td>
+<td align="center">Mode :character</td>
+<td align="center">Mode :character</td>
+<td align="center">Mode :character</td>
+</tr>
+<tr class="even">
+<td align="center">Mean :20238</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">3rd Qu.:24860</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">Max. :29482</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Table continues below</caption>
+<colgroup>
+<col width="24%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">City</th>
+<th align="center">StateProvinceName</th>
+<th align="center">CountryRegionName</th>
+<th align="center">PostalCode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Length:16421</td>
+<td align="center">Length:16421</td>
+<td align="center">Length:16421</td>
+<td align="center">Length:16421</td>
+</tr>
+<tr class="even">
+<td align="center">Class :character</td>
+<td align="center">Class :character</td>
+<td align="center">Class :character</td>
+<td align="center">Class :character</td>
+</tr>
+<tr class="odd">
+<td align="center">Mode :character</td>
+<td align="center">Mode :character</td>
+<td align="center">Mode :character</td>
+<td align="center">Mode :character</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Table continues below</caption>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">PhoneNumber</th>
+<th align="center">BirthDate</th>
+<th align="center">Education</th>
+<th align="center">Occupation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Length:16421</td>
+<td align="center">Length:16421</td>
+<td align="center">Length:16421</td>
+<td align="center">Length:16421</td>
+</tr>
+<tr class="even">
+<td align="center">Class :character</td>
+<td align="center">Class :character</td>
+<td align="center">Class :character</td>
+<td align="center">Class :character</td>
+</tr>
+<tr class="odd">
+<td align="center">Mode :character</td>
+<td align="center">Mode :character</td>
+<td align="center">Mode :character</td>
+<td align="center">Mode :character</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+</tbody>
+</table>
+<table style="width:100%;">
+<caption>Table continues below</caption>
+<colgroup>
+<col width="26%" />
+<col width="26%" />
+<col width="23%" />
+<col width="24%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Gender</th>
+<th align="center">MaritalStatus</th>
+<th align="center">HomeOwnerFlag</th>
+<th align="center">NumberCarsOwned</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Length:16421</td>
+<td align="center">Length:16421</td>
+<td align="center">Min. :0.0000</td>
+<td align="center">Min. :0.0</td>
+</tr>
+<tr class="even">
+<td align="center">Class :character</td>
+<td align="center">Class :character</td>
+<td align="center">1st Qu.:0.0000</td>
+<td align="center">1st Qu.:1.0</td>
+</tr>
+<tr class="odd">
+<td align="center">Mode :character</td>
+<td align="center">Mode :character</td>
+<td align="center">Median :1.0000</td>
+<td align="center">Median :2.0</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">Mean :0.6742</td>
+<td align="center">Mean :1.5</td>
+</tr>
+<tr class="odd">
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">3rd Qu.:1.0000</td>
+<td align="center">3rd Qu.:2.0</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">Max. :1.0000</td>
+<td align="center">Max. :4.0</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Table continues below</caption>
+<colgroup>
+<col width="31%" />
+<col width="21%" />
+<col width="23%" />
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">NumberChildrenAtHome</th>
+<th align="center">TotalChildren</th>
+<th align="center">YearlyIncome</th>
+<th align="center">AveMonthSpend</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Min. :0.0000</td>
+<td align="center">Min. :0.000</td>
+<td align="center">Min. : 9482</td>
+<td align="center">Min. : 22.0</td>
+</tr>
+<tr class="even">
+<td align="center">1st Qu.:0.0000</td>
+<td align="center">1st Qu.:0.000</td>
+<td align="center">1st Qu.: 47816</td>
+<td align="center">1st Qu.: 52.0</td>
+</tr>
+<tr class="odd">
+<td align="center">Median :0.0000</td>
+<td align="center">Median :2.000</td>
+<td align="center">Median : 76134</td>
+<td align="center">Median : 68.0</td>
+</tr>
+<tr class="even">
+<td align="center">Mean :0.9912</td>
+<td align="center">Mean :2.005</td>
+<td align="center">Mean : 78139</td>
+<td align="center">Mean : 72.4</td>
+</tr>
+<tr class="odd">
+<td align="center">3rd Qu.:2.0000</td>
+<td align="center">3rd Qu.:3.000</td>
+<td align="center">3rd Qu.:105203</td>
+<td align="center">3rd Qu.: 84.0</td>
+</tr>
+<tr class="even">
+<td align="center">Max. :5.0000</td>
+<td align="center">Max. :5.000</td>
+<td align="center">Max. :196511</td>
+<td align="center">Max. :176.0</td>
+</tr>
+</tbody>
+</table>
+<table style="width:24%;">
+<colgroup>
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">BikeBuyer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Min. :0.0000</td>
+</tr>
+<tr class="even">
+<td align="center">1st Qu.:0.0000</td>
+</tr>
+<tr class="odd">
+<td align="center">Median :0.0000</td>
+</tr>
+<tr class="even">
+<td align="center">Mean :0.3323</td>
+</tr>
+<tr class="odd">
+<td align="center">3rd Qu.:1.0000</td>
+</tr>
+<tr class="even">
+<td align="center">Max. :1.0000</td>
+</tr>
+</tbody>
+</table>
+<p>Here you can see the first few rows of the dataset to get a feel of the data.</p>
+<pre class="r"><code>head(data_clean)</code></pre>
+<pre><code>##   CustomerID FirstName LastName        AddressLine1          City
+## 1      11000       Jon     Yang     3761 N. 14th St   Rockhampton
+## 2      11001    Eugene    Huang          2243 W St.       Seaford
+## 3      11002     Ruben   Torres    5844 Linden Land        Hobart
+## 4      11003   Christy      Zhu    1825 Village Pl.    North Ryde
+## 5      11004 Elizabeth  Johnson 7553 Harness Circle    Wollongong
+## 6      11005     Julio     Ruiz 7305 Humphrey Drive East Brisbane
+##   StateProvinceName CountryRegionName PostalCode         PhoneNumber BirthDate
+## 1        Queensland         Australia       4700 1 (11) 500 555-0162  4/8/1966
+## 2          Victoria         Australia       3198 1 (11) 500 555-0110 5/14/1965
+## 3          Tasmania         Australia       7001 1 (11) 500 555-0184 8/12/1965
+## 4   New South Wales         Australia       2113 1 (11) 500 555-0162 2/15/1968
+## 5   New South Wales         Australia       2500 1 (11) 500 555-0131  8/8/1968
+## 6        Queensland         Australia       4169 1 (11) 500 555-0151  8/5/1965
+##   Education   Occupation Gender MaritalStatus HomeOwnerFlag NumberCarsOwned
+## 1 Bachelors Professional      M             M             1               0
+## 2 Bachelors Professional      M             S             0               1
+## 3 Bachelors Professional      M             M             1               1
+## 4 Bachelors Professional      F             S             0               1
+## 5 Bachelors Professional      F             S             1               4
+## 6 Bachelors Professional      M             S             1               1
+##   NumberChildrenAtHome TotalChildren YearlyIncome AveMonthSpend BikeBuyer
+## 1                    0             2       137947            89         0
+## 2                    3             3       101141           117         1
+## 3                    3             3        91945           123         0
+## 4                    0             0        86688            50         0
+## 5                    5             5        92771            95         1
+## 6                    0             0       103199            78         1</code></pre>
+<div id="finding-the-predictive-model" class="section level2">
+<h2>Finding the predictive model</h2>
+<p>Our null hypothesis is that the variation in AveMOnthSpend is due to randomization, and not due to the variation of other variables. In other words, other variables cannot explain the AveMonthSpend.</p>
+<p>Let’s start at visualizing the variables.</p>
+<pre class="r"><code>###Let&#39;s add up age column using the existing DOB column
+#Change BirthDate from Character to Date format
+data_clean$BirthDate &lt;- as.Date(data_clean$BirthDate, format = &quot;%m/%d/%Y&quot;)
+
+#Append the new column called Age
+data_clean$Age &lt;- as.numeric(difftime(&quot;1998-01-01&quot;,data_clean$BirthDate, units = &quot;weeks&quot;))/52.25
+
+data_qualitative &lt;- data_clean %&gt;% select(11:16)
+data_quantitative &lt;- data_clean %&gt;% select(c(22,16:20))
+plot(data_quantitative)</code></pre>
+<p><img src="Regression_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>I see some sort of relationship between Age, YearlyIncome, TotalChildren, and NumberChildrenAtHome.</p>
+<p>NOTE: We might consider NumberChildrenAtHome as a discrete variable or factor, but I think it’s better if we keep it as continuous.</p>
+<hr />
+<p>As per the qualitative variables, you can refer back to my EDA window.</p>
+<p>(Summary: Categorical features such as occupation, gender, marital status and home owner flag have distinct relationships with average month spend. The quartiles are of different levels. It seems that Males spend more on average than females same for married and homeowners)</p>
+<pre class="r"><code>#creating a smaller data frame with the features that seem to play a role
+
+features &lt;- cbind(data_qualitative,data_quantitative)
+head(features)</code></pre>
+<pre><code>##   Education   Occupation Gender MaritalStatus HomeOwnerFlag NumberCarsOwned
+## 1 Bachelors Professional      M             M             1               0
+## 2 Bachelors Professional      M             S             0               1
+## 3 Bachelors Professional      M             M             1               1
+## 4 Bachelors Professional      F             S             0               1
+## 5 Bachelors Professional      F             S             1               4
+## 6 Bachelors Professional      M             S             1               1
+##        Age NumberCarsOwned NumberChildrenAtHome TotalChildren YearlyIncome
+## 1 31.69150               0                    0             2       137947
+## 2 32.59102               1                    3             3       101141
+## 3 32.34495               1                    3             3        91945
+## 4 29.83778               1                    0             0        86688
+## 5 29.35931               4                    5             5        92771
+## 6 32.36409               1                    0             0       103199
+##   AveMonthSpend
+## 1            89
+## 2           117
+## 3           123
+## 4            50
+## 5            95
+## 6            78</code></pre>
+<p>Let’s start with building our model</p>
+<pre class="r"><code>#We&#39;ll use a forward approach. We&#39;ll start from most simple to most complex
+
+model1 &lt;- lm(AveMonthSpend ~ YearlyIncome, data = features)
+summary(model1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = AveMonthSpend ~ YearlyIncome, data = features)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -55.644 -14.729  -2.715  10.422  81.405 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  3.981e+01  3.731e-01  106.71   &lt;2e-16 ***
+## YearlyIncome 4.171e-04  4.256e-06   97.99   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 21.66 on 16419 degrees of freedom
+## Multiple R-squared:  0.369,  Adjusted R-squared:  0.369 
+## F-statistic:  9602 on 1 and 16419 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>model2 &lt;- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome, data = features)
+summary(model2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome, 
+##     data = features)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -49.282 -13.160  -1.241  13.365  43.011 
+## 
+## Coefficients:
+##                       Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)          4.085e+01  2.712e-01  150.63   &lt;2e-16 ***
+## YearlyIncome         2.698e-04  3.322e-06   81.21   &lt;2e-16 ***
+## NumberChildrenAtHome 1.056e+01  8.715e-02  121.21   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 15.74 on 16418 degrees of freedom
+## Multiple R-squared:  0.667,  Adjusted R-squared:  0.667 
+## F-statistic: 1.644e+04 on 2 and 16418 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>model3 &lt;- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + TotalChildren, data = features)
+summary(model3)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + 
+##     TotalChildren, data = features)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -49.986 -13.133  -1.167  13.333  43.127 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)           4.140e+01  2.837e-01 145.917  &lt; 2e-16 ***
+## YearlyIncome          2.737e-04  3.371e-06  81.184  &lt; 2e-16 ***
+## NumberChildrenAtHome  1.098e+01  1.081e-01 101.552  &lt; 2e-16 ***
+## TotalChildren        -6.340e-01  9.720e-02  -6.522 7.12e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 15.72 on 16417 degrees of freedom
+## Multiple R-squared:  0.6679, Adjusted R-squared:  0.6678 
+## F-statistic: 1.1e+04 on 3 and 16417 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>model4 &lt;- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + TotalChildren + Age, data = features)
+summary(model4) #Notice how Total Children becomes insignificant!</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + 
+##     TotalChildren + Age, data = features)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -45.572 -13.176  -0.941  13.218  42.285 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)           4.521e+01  4.829e-01  93.612   &lt;2e-16 ***
+## YearlyIncome          2.763e-04  3.372e-06  81.929   &lt;2e-16 ***
+## NumberChildrenAtHome  1.041e+01  1.228e-01  84.774   &lt;2e-16 ***
+## TotalChildren         1.347e-01  1.250e-01   1.078    0.281    
+## Age                  -1.389e-01  1.426e-02  -9.738   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 15.67 on 16416 degrees of freedom
+## Multiple R-squared:  0.6698, Adjusted R-squared:  0.6697 
+## F-statistic:  8324 on 4 and 16416 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>model5 &lt;- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + Age, data = features)
+summary(model5) </code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + 
+##     Age, data = features)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -45.970 -13.192  -0.888  13.223  42.358 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)           4.501e+01  4.474e-01  100.61   &lt;2e-16 ***
+## YearlyIncome          2.766e-04  3.359e-06   82.34   &lt;2e-16 ***
+## NumberChildrenAtHome  1.050e+01  8.695e-02  120.81   &lt;2e-16 ***
+## Age                  -1.292e-01  1.106e-02  -11.68   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 15.67 on 16417 degrees of freedom
+## Multiple R-squared:  0.6698, Adjusted R-squared:  0.6697 
+## F-statistic: 1.11e+04 on 3 and 16417 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>model6 &lt;- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + Age + NumberCarsOwned, data = features)
+summary(model6) </code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + 
+##     Age + NumberCarsOwned, data = features)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -46.524 -13.212  -0.607  13.137  42.700 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)           4.525e+01  4.478e-01 101.049  &lt; 2e-16 ***
+## YearlyIncome          2.816e-04  3.421e-06  82.324  &lt; 2e-16 ***
+## NumberChildrenAtHome  1.075e+01  9.278e-02 115.838  &lt; 2e-16 ***
+## Age                  -1.151e-01  1.120e-02 -10.269  &lt; 2e-16 ***
+## NumberCarsOwned      -9.180e-01  1.233e-01  -7.445 1.02e-13 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 15.65 on 16416 degrees of freedom
+## Multiple R-squared:  0.6709, Adjusted R-squared:  0.6708 
+## F-statistic:  8365 on 4 and 16416 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

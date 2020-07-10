@@ -1,0 +1,26 @@
+---
+title: "Progress Insights"
+output:
+  html_document:
+    theme: journal
+    css: styles.css
+---
+
+#### May 10th, 2020
+
+During these weeks, I've been able to explore and reflect on what I've learned in my classes as a data science major at BYU-I.
+For my senior project, I decided to apply different data science tecniques and create a project which shows the most important ones I've learned. Thus, in this project I will perform a descriptive statistics analysis and visualizations, linear regression, classification models, and, possibly natural language processing algorithms too. To begin with the first part of the analysis, and create visualizations, I will use a data set found on the internet, Adventure Works Cycles, a fictious, multinational bicycle manufacturer. I will also work on building a porfolio, which will consist of website using R. I will switch to blogdown later in the semester, so I can build a better, more holistic portfolio. 
+
+#### May 25th, 2020
+
+I've focused on the schedule and technical details of my senior project: I've been learning a little bit more about blogdown and r markdown (which will help me in the reporting of the analysis). I've also got familiarized with the dataset and took the time to come up with some questions for my project (see the Exploratory Data Analysis page). I've also followed the schedule for the class and updated my proposal with detailed steps to completion. My schedule goes as follows: 
+
+* Week 07: AdvWorks EDA
+* Week 08: DS Blog Post 1 (Topic: CS 335 final project ~ NLP)
+* Week 09: AdvWorks Regression Model
+* Week 10: DS Blog Post 2 (Topic: MATH 425 Regression analysis?)
+* Week 11: AdvWorks Classification Model
+* Week 12: DS Blog Post 3 (Topic: CS 241 final project ~ Python game)
+* Week 13: AdvWorks Summary (and Review)
+* Week 14: DS Blog + Porfolio assemble (using Blogdown)
+

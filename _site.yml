@@ -1,8 +1,22 @@
-name: "my-website"
+name: "Senior Project"
 navbar:
-  title: "My Website"
+  title: "CS 499"
   left:
-    - text: "Home"
+    - text: "Overview"
       href: index.html
-    - text: "Senior Project"
-      href: about.html
+    - text: "Exploratory Data Analysis"
+      href: Visualization.html     
+    - text: "Regression"
+      href: Regression.html
+    - text: "Classification"
+      href: Classification.html
+    - text: "Blog Post 1"
+      href: blogpost1.html
+    - text: "Blog Post 2"
+      href: blogpost2.html
+    - text: "Progress Insight"
+      href: progress.html
+      
+      
+      
+output_dir: '.'
