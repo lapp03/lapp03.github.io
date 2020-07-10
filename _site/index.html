@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
 
-<title>My Senior Project</title>
+<title>My Website</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -83,7 +83,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -232,6 +231,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -243,18 +243,6 @@ $(document).ready(function () {
   display: none;
 }
 </style>
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
 
 <!-- code folding -->
 
@@ -279,7 +267,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">My Website</a>
+      <a class="navbar-brand" href="index.html">CS 499</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -287,7 +275,13 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="about.html">Senior Project</a>
+  <a href="Visualization.html">Visualization</a>
+</li>
+<li>
+  <a href="Regression.html">Regression</a>
+</li>
+<li>
+  <a href="Classification.html">Classification</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -301,15 +295,14 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">My Senior Project</h1>
+<h1 class="title toc-ignore">My Website</h1>
 
 </div>
 
 
-<div id="week-01-02" class="section level4">
-<h4>Week 01-02</h4>
-<p>During these weeks, I’ve been able to explore and reflect on what I’ve learned in my classes as a data science major at BYU-I. For my senior project, I decided to apply different data science tecniques and create a project which shows the most important ones I’ve learned. Thus, in this project I will perform a descriptive statistics analysis and visualizations, linear regression, classification models, and, possibly natural language processing algorithms too. To begin with the first part of the analysis, and create visualizations, I will use a data set found on the internet, Adventure Works Cycles, a fictious, multinational bicycle manufacturer. I will also work on building a porfolio, which will consist of website using R. I will switch to blogdown later in the semester, so I can build a better, more holistic portfolio.</p>
-</div>
+<p>Hello, Website!</p>
+<p>For more information about simple R Markdown websites, please read the documentation at <a href="https://bookdown.org/yihui/rmarkdown/rmarkdown-site.html" class="uri">https://bookdown.org/yihui/rmarkdown/rmarkdown-site.html</a>.</p>
+<p>Please also note that simple R Markdown sites are <em>not</em> based on <strong>blogdown</strong>. They are probably good for websites with only a few Rmd documents. For larger-scale and more sophisticated websites (such as blogs), you may want to use <strong>blogdown</strong> instead: <a href="https://github.com/rstudio/blogdown" class="uri">https://github.com/rstudio/blogdown</a>.</p>
 
 
 
@@ -328,6 +321,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
