@@ -20,6 +20,7 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
@@ -246,6 +247,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -303,6 +307,14 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Classification</h1>
@@ -310,7 +322,130 @@ $(document).ready(function () {
 </div>
 
 
+<p>Now we will predict whether one client will buy a bike or not based on certain demographic features. The method we’ll use is called DECISION TREE. Decision tress are algorithms of supervised classification, which seek to predict a specific dependent variable (BikeBuyer in this case). Both independent and depedendent variables can be either qualitative or quantitive. If the dependent variable is numerical, we call it “Regression Tree”; but in our case, where the variable is categorical (even if we represent it with O and 1), then we call it CLASSIFICATION TREE. And the end, we’ll compare it to the logistic regression model, which is used to predict binary variables too.</p>
+<div id="i.-lets-load-the-libraries-and-dataset." class="section level2">
+<h2>I. Let’s load the libraries and dataset.</h2>
+<p>Here the new ones are the rpart and rpart.plot libraries used for the creationg of the classification model and graphing the decision tree respectively.</p>
+<pre class="r"><code>library(readr)          #to read in the csv
+library(dbplyr)         #for data wrangling
+library(tidyverse)      #for data wrangling, for example the function &quot;select&quot;
+library(rpart)          #decision tree algorithm
+library(rpart.plot)     #graph the decision tree</code></pre>
+</div>
+<div id="ii.-data-wrangle" class="section level2">
+<h2>II. Data Wrangle</h2>
+<p>The data wrangling part we can see it in the other sections (Regression or Exploratory Data Analysis). The only exception is that we added the column of Bike Buyer(which has 1 if the customer bought a bike, or a 0 if they didn’t) to the data_qualitative subset. That’s the most important column for this part of the analysis.</p>
+<pre class="r"><code>customer              &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AdvWorksCusts.csv&quot;)
+spend                 &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AW_AveMonthSpend.csv&quot;)
+bikebuyer             &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AW_BikeBuyer.csv&quot;)
+three_datasets        &lt;- data.frame(customer, spend, bikebuyer)
+data_clean            &lt;- select(three_datasets,-c(CustomerID.1, CustomerID.2))
+missing_values        &lt;- sapply(data_clean, function(x) sum(is.na(x))) #it checks number of missing values by column
+data_clean            &lt;- select(three_datasets,-c(CustomerID.1, CustomerID.2, Title, MiddleName, Suffix, AddressLine2)) 
+data_clean            &lt;- data_clean[!duplicated(data_clean), ] #it removes duplicates
+###Let&#39;s add up age column using the existing DOB column
+#Change BirthDate from Character to Date format
+data_clean$BirthDate  &lt;- as.Date(data_clean$BirthDate, format = &quot;%m/%d/%Y&quot;)
 
+#Append the new column called Age
+data_clean$Age        &lt;- as.numeric(difftime(&quot;1998-01-01&quot;,data_clean$BirthDate, units = &quot;weeks&quot;))/52.25
+
+data_qualitative      &lt;- data_clean %&gt;% select(11:16,21) 
+data_quantitative     &lt;- data_clean %&gt;% select(c(22,17:20))
+features              &lt;- cbind(data_quantitative,data_qualitative)
+#plot(data_quantitative)</code></pre>
+<p>We’ll have to select some features, the ones that correlate the most with the dependent variable. I think it’s easier if we do that separating the independent variables between categorical and numerical. When you plot numerical variables, we can see some correlation with age and average month spent, so we’ll keep those, and get rid of the rest. As for the qualitative variables, we could do some visualizations or Chi Squared test, and explore the possible correlations. For now, let’s just use all possible explanatory variables and then “prune” our decision tree.</p>
+</div>
+<div id="iii.-now-split-our-traintest-set" class="section level2">
+<h2>III. Now split our train/test set</h2>
+<p>We’ll divide our dataset this way: 60% train and 40% test. In the first line, we just create an index that we’ll assign 1’s and 2’s to each row, with aprobabibloty of 60/40 %, which in turns gives a vector that we’ll use as “dictionary” to tell which rows will be train and which will be test.</p>
+<pre class="r"><code>ind       &lt;- sample(2, nrow(features), replace = TRUE, prob = c(0.6,0.4)) #60% training, 40% test
+trainData &lt;- features[ind == 1, ] #training
+testData  &lt;- features[ind == 2, ] # test </code></pre>
+</div>
+<div id="iv.-creation-of-the-decision-tree" class="section level2">
+<h2>IV. Creation of the Decision Tree</h2>
+<p>We input the dependent variable, and we’ll explain it with a rest of the the variables which is why we leave the space after the Bike buyer, in blank. here “method” indicated that our variable to be predicted is categorical</p>
+<pre class="r"><code>tree &lt;- rpart(BikeBuyer ~ ., method = &#39;class&#39;, data = trainData)</code></pre>
+</div>
+<div id="v.-checking-tree-and-results" class="section level2">
+<h2>V. Checking tree and results</h2>
+<pre class="r"><code>print(tree)</code></pre>
+<pre><code>## n= 9905 
+## 
+## node), split, n, loss, yval, (yprob)
+##       * denotes terminal node
+## 
+##  1) root 9905 3243 0 (0.6725896 0.3274104)  
+##    2) NumberChildrenAtHome&lt; 1.5 7371 1495 0 (0.7971781 0.2028219) *
+##    3) NumberChildrenAtHome&gt;=1.5 2534  786 1 (0.3101815 0.6898185)  
+##      6) AveMonthSpend&lt; 87.5 908  417 1 (0.4592511 0.5407489)  
+##       12) MaritalStatus=M 338  115 0 (0.6597633 0.3402367) *
+##       13) MaritalStatus=S 570  194 1 (0.3403509 0.6596491) *
+##      7) AveMonthSpend&gt;=87.5 1626  369 1 (0.2269373 0.7730627) *</code></pre>
+<pre class="r"><code>rpart.plot(tree, extra = 4)     # extra = 4: probability of observations by class</code></pre>
+<p><img src="Classification_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>printcp(tree)                   # stats of results</code></pre>
+<pre><code>## 
+## Classification tree:
+## rpart(formula = BikeBuyer ~ ., data = trainData, method = &quot;class&quot;)
+## 
+## Variables actually used in tree construction:
+## [1] AveMonthSpend        MaritalStatus        NumberChildrenAtHome
+## 
+## Root node error: 3243/9905 = 0.32741
+## 
+## n= 9905 
+## 
+##         CP nsplit rel error  xerror     xstd
+## 1 0.296639      0   1.00000 1.00000 0.014401
+## 2 0.016651      1   0.70336 0.70336 0.012921
+## 3 0.010000      3   0.67006 0.67468 0.012731</code></pre>
+<pre class="r"><code>plotcp(tree)                    # evolution of error as the number of nodes increases</code></pre>
+<p><img src="Classification_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<p>Here we see that N is the number of observations, 9,808. In the first line, we see that most observations/clients (66.8%) DIDN’T buy a bike (BikeBuyer = 0), and so on. For the company, it’s interesting to see that the person that will likely buy a bike the most is someone who is married, with more than 2 children at home.</p>
+</div>
+<div id="vi.-pruning-the-tree" class="section level2">
+<h2>VI. Pruning the tree</h2>
+<pre class="r"><code>pruneTree &lt;- prune(tree, cp = 0.01000) #Using the lowest CP from the printcp(tree) command above
+printcp(pruneTree)</code></pre>
+<pre><code>## 
+## Classification tree:
+## rpart(formula = BikeBuyer ~ ., data = trainData, method = &quot;class&quot;)
+## 
+## Variables actually used in tree construction:
+## [1] AveMonthSpend        MaritalStatus        NumberChildrenAtHome
+## 
+## Root node error: 3243/9905 = 0.32741
+## 
+## n= 9905 
+## 
+##         CP nsplit rel error  xerror     xstd
+## 1 0.296639      0   1.00000 1.00000 0.014401
+## 2 0.016651      1   0.70336 0.70336 0.012921
+## 3 0.010000      3   0.67006 0.67468 0.012731</code></pre>
+<p>As you can see, printcp(pruneTree) and Tree is the same thus showing that the first command had already pruned (or didn’t) where it had to.</p>
+</div>
+<div id="vii.-predict-who-will-buy-bikes-on-test-data." class="section level2">
+<h2>VII. Predict who will buy bikes on test data.</h2>
+<pre class="r"><code>#We validate the ability of prediction of our prediction tree usin the test dataset
+testTree &lt;- predict(tree, newdata = testData, type = &#39;class&#39;)
+
+#let&#39;s visualize the results with a matrix of confusion
+table(testTree, testData$BikeBuyer)</code></pre>
+<pre><code>##         
+## testTree    0    1
+##        0 3948 1077
+##        1  354 1137</code></pre>
+<p>There we saw that our model predicted 4,024 people who were not buyers correctly, and 1051 who were did buy but we classifed them as not. Same, with the other row.</p>
+</div>
+<div id="viii.-evaluating-the-model." class="section level2">
+<h2>VIII. Evaluating the model.</h2>
+<pre class="r"><code>## Let&#39;s calculate the % of correct answers 
+ sum(testTree == testData$BikeBuyer) / length(testData$BikeBuyer)*100</code></pre>
+<pre><code>## [1] 78.03867</code></pre>
+<p>it shows that we have 78.91% of accurate predictions!</p>
+</div>
 
 
 
@@ -345,6 +480,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
