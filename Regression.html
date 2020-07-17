@@ -301,7 +301,7 @@ $(document).ready(function () {
   <a href="blogpost4.html">Blog Post 4</a>
 </li>
 <li>
-  <a href="progress.html">Progress Insight</a>
+  <a href="progress.html">Other</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -352,342 +352,9 @@ missing_values &lt;- sapply(data_clean, function(x) sum(is.na(x))) #it checks nu
 data_clean &lt;- select(three_datasets,-c(CustomerID.1, CustomerID.2, Title, MiddleName, Suffix, AddressLine2)) 
 data_clean &lt;- data_clean[!duplicated(data_clean), ] #it removes duplicates</code></pre>
 <p>Here’s a summary of the data. We can see that there abour 6 continuos variables. Let us remember that our response variable, what we’re trying to predict, is the <span class="math inline">\(AveMonthSpend\)</span> variable.</p>
-<pre class="r"><code>pander(summary(data_clean))</code></pre>
-<table>
-<caption>Table continues below</caption>
-<colgroup>
-<col width="21%" />
-<col width="26%" />
-<col width="26%" />
-<col width="26%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">CustomerID</th>
-<th align="center">FirstName</th>
-<th align="center">LastName</th>
-<th align="center">AddressLine1</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Min. :11000</td>
-<td align="center">Length:16421</td>
-<td align="center">Length:16421</td>
-<td align="center">Length:16421</td>
-</tr>
-<tr class="even">
-<td align="center">1st Qu.:15615</td>
-<td align="center">Class :character</td>
-<td align="center">Class :character</td>
-<td align="center">Class :character</td>
-</tr>
-<tr class="odd">
-<td align="center">Median :20228</td>
-<td align="center">Mode :character</td>
-<td align="center">Mode :character</td>
-<td align="center">Mode :character</td>
-</tr>
-<tr class="even">
-<td align="center">Mean :20238</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-<tr class="odd">
-<td align="center">3rd Qu.:24860</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-<tr class="even">
-<td align="center">Max. :29482</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-</tbody>
-</table>
-<table>
-<caption>Table continues below</caption>
-<colgroup>
-<col width="24%" />
-<col width="25%" />
-<col width="25%" />
-<col width="25%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">City</th>
-<th align="center">StateProvinceName</th>
-<th align="center">CountryRegionName</th>
-<th align="center">PostalCode</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Length:16421</td>
-<td align="center">Length:16421</td>
-<td align="center">Length:16421</td>
-<td align="center">Length:16421</td>
-</tr>
-<tr class="even">
-<td align="center">Class :character</td>
-<td align="center">Class :character</td>
-<td align="center">Class :character</td>
-<td align="center">Class :character</td>
-</tr>
-<tr class="odd">
-<td align="center">Mode :character</td>
-<td align="center">Mode :character</td>
-<td align="center">Mode :character</td>
-<td align="center">Mode :character</td>
-</tr>
-<tr class="even">
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-<tr class="odd">
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-<tr class="even">
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-</tbody>
-</table>
-<table>
-<caption>Table continues below</caption>
-<colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="25%" />
-<col width="25%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">PhoneNumber</th>
-<th align="center">BirthDate</th>
-<th align="center">Education</th>
-<th align="center">Occupation</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Length:16421</td>
-<td align="center">Length:16421</td>
-<td align="center">Length:16421</td>
-<td align="center">Length:16421</td>
-</tr>
-<tr class="even">
-<td align="center">Class :character</td>
-<td align="center">Class :character</td>
-<td align="center">Class :character</td>
-<td align="center">Class :character</td>
-</tr>
-<tr class="odd">
-<td align="center">Mode :character</td>
-<td align="center">Mode :character</td>
-<td align="center">Mode :character</td>
-<td align="center">Mode :character</td>
-</tr>
-<tr class="even">
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-<tr class="odd">
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-<tr class="even">
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-</tbody>
-</table>
-<table style="width:100%;">
-<caption>Table continues below</caption>
-<colgroup>
-<col width="26%" />
-<col width="26%" />
-<col width="23%" />
-<col width="24%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">Gender</th>
-<th align="center">MaritalStatus</th>
-<th align="center">HomeOwnerFlag</th>
-<th align="center">NumberCarsOwned</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Length:16421</td>
-<td align="center">Length:16421</td>
-<td align="center">Min. :0.0000</td>
-<td align="center">Min. :0.0</td>
-</tr>
-<tr class="even">
-<td align="center">Class :character</td>
-<td align="center">Class :character</td>
-<td align="center">1st Qu.:0.0000</td>
-<td align="center">1st Qu.:1.0</td>
-</tr>
-<tr class="odd">
-<td align="center">Mode :character</td>
-<td align="center">Mode :character</td>
-<td align="center">Median :1.0000</td>
-<td align="center">Median :2.0</td>
-</tr>
-<tr class="even">
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">Mean :0.6742</td>
-<td align="center">Mean :1.5</td>
-</tr>
-<tr class="odd">
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3rd Qu.:1.0000</td>
-<td align="center">3rd Qu.:2.0</td>
-</tr>
-<tr class="even">
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">Max. :1.0000</td>
-<td align="center">Max. :4.0</td>
-</tr>
-</tbody>
-</table>
-<table>
-<caption>Table continues below</caption>
-<colgroup>
-<col width="31%" />
-<col width="21%" />
-<col width="23%" />
-<col width="23%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">NumberChildrenAtHome</th>
-<th align="center">TotalChildren</th>
-<th align="center">YearlyIncome</th>
-<th align="center">AveMonthSpend</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Min. :0.0000</td>
-<td align="center">Min. :0.000</td>
-<td align="center">Min. : 9482</td>
-<td align="center">Min. : 22.0</td>
-</tr>
-<tr class="even">
-<td align="center">1st Qu.:0.0000</td>
-<td align="center">1st Qu.:0.000</td>
-<td align="center">1st Qu.: 47816</td>
-<td align="center">1st Qu.: 52.0</td>
-</tr>
-<tr class="odd">
-<td align="center">Median :0.0000</td>
-<td align="center">Median :2.000</td>
-<td align="center">Median : 76134</td>
-<td align="center">Median : 68.0</td>
-</tr>
-<tr class="even">
-<td align="center">Mean :0.9912</td>
-<td align="center">Mean :2.005</td>
-<td align="center">Mean : 78139</td>
-<td align="center">Mean : 72.4</td>
-</tr>
-<tr class="odd">
-<td align="center">3rd Qu.:2.0000</td>
-<td align="center">3rd Qu.:3.000</td>
-<td align="center">3rd Qu.:105203</td>
-<td align="center">3rd Qu.: 84.0</td>
-</tr>
-<tr class="even">
-<td align="center">Max. :5.0000</td>
-<td align="center">Max. :5.000</td>
-<td align="center">Max. :196511</td>
-<td align="center">Max. :176.0</td>
-</tr>
-</tbody>
-</table>
-<table style="width:24%;">
-<colgroup>
-<col width="23%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">BikeBuyer</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Min. :0.0000</td>
-</tr>
-<tr class="even">
-<td align="center">1st Qu.:0.0000</td>
-</tr>
-<tr class="odd">
-<td align="center">Median :0.0000</td>
-</tr>
-<tr class="even">
-<td align="center">Mean :0.3323</td>
-</tr>
-<tr class="odd">
-<td align="center">3rd Qu.:1.0000</td>
-</tr>
-<tr class="even">
-<td align="center">Max. :1.0000</td>
-</tr>
-</tbody>
-</table>
+<pre class="r"><code>data_clean %&gt;% summary.data.frame()</code></pre>
 <p>Here you can see the first few rows of the dataset to get a feel of the data.</p>
-<pre class="r"><code>head(data_clean)</code></pre>
-<pre><code>##   CustomerID FirstName LastName        AddressLine1          City
-## 1      11000       Jon     Yang     3761 N. 14th St   Rockhampton
-## 2      11001    Eugene    Huang          2243 W St.       Seaford
-## 3      11002     Ruben   Torres    5844 Linden Land        Hobart
-## 4      11003   Christy      Zhu    1825 Village Pl.    North Ryde
-## 5      11004 Elizabeth  Johnson 7553 Harness Circle    Wollongong
-## 6      11005     Julio     Ruiz 7305 Humphrey Drive East Brisbane
-##   StateProvinceName CountryRegionName PostalCode         PhoneNumber BirthDate
-## 1        Queensland         Australia       4700 1 (11) 500 555-0162  4/8/1966
-## 2          Victoria         Australia       3198 1 (11) 500 555-0110 5/14/1965
-## 3          Tasmania         Australia       7001 1 (11) 500 555-0184 8/12/1965
-## 4   New South Wales         Australia       2113 1 (11) 500 555-0162 2/15/1968
-## 5   New South Wales         Australia       2500 1 (11) 500 555-0131  8/8/1968
-## 6        Queensland         Australia       4169 1 (11) 500 555-0151  8/5/1965
-##   Education   Occupation Gender MaritalStatus HomeOwnerFlag NumberCarsOwned
-## 1 Bachelors Professional      M             M             1               0
-## 2 Bachelors Professional      M             S             0               1
-## 3 Bachelors Professional      M             M             1               1
-## 4 Bachelors Professional      F             S             0               1
-## 5 Bachelors Professional      F             S             1               4
-## 6 Bachelors Professional      M             S             1               1
-##   NumberChildrenAtHome TotalChildren YearlyIncome AveMonthSpend BikeBuyer
-## 1                    0             2       137947            89         0
-## 2                    3             3       101141           117         1
-## 3                    3             3        91945           123         0
-## 4                    0             0        86688            50         0
-## 5                    5             5        92771            95         1
-## 6                    0             0       103199            78         1</code></pre>
+<pre class="r"><code>datatable(head(data_clean))</code></pre>
 <div id="finding-the-predictive-model" class="section level2">
 <h2>Finding the predictive model</h2>
 <p>Our null hypothesis is that the variation in AveMOnthSpend is due to randomization, and not due to the variation of other variables. In other words, other variables cannot explain the AveMonthSpend.</p>
@@ -699,7 +366,7 @@ data_clean$BirthDate &lt;- as.Date(data_clean$BirthDate, format = &quot;%m/%d/%Y
 #Append the new column called Age
 data_clean$Age &lt;- as.numeric(difftime(&quot;1998-01-01&quot;,data_clean$BirthDate, units = &quot;weeks&quot;))/52.25
 
-data_qualitative &lt;- data_clean %&gt;% select(11:16)
+data_qualitative &lt;- data_clean %&gt;% select(11:15)
 data_quantitative &lt;- data_clean %&gt;% select(c(22,16:20))
 plot(data_quantitative)</code></pre>
 <p><img src="Regression_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
@@ -712,27 +379,20 @@ plot(data_quantitative)</code></pre>
 
 features &lt;- cbind(data_qualitative,data_quantitative)
 head(features)</code></pre>
-<pre><code>##   Education   Occupation Gender MaritalStatus HomeOwnerFlag NumberCarsOwned
-## 1 Bachelors Professional      M             M             1               0
-## 2 Bachelors Professional      M             S             0               1
-## 3 Bachelors Professional      M             M             1               1
-## 4 Bachelors Professional      F             S             0               1
-## 5 Bachelors Professional      F             S             1               4
-## 6 Bachelors Professional      M             S             1               1
-##        Age NumberCarsOwned NumberChildrenAtHome TotalChildren YearlyIncome
-## 1 31.69150               0                    0             2       137947
-## 2 32.59102               1                    3             3       101141
-## 3 32.34495               1                    3             3        91945
-## 4 29.83778               1                    0             0        86688
-## 5 29.35931               4                    5             5        92771
-## 6 32.36409               1                    0             0       103199
-##   AveMonthSpend
-## 1            89
-## 2           117
-## 3           123
-## 4            50
-## 5            95
-## 6            78</code></pre>
+<pre><code>##   Education   Occupation Gender MaritalStatus HomeOwnerFlag      Age
+## 1 Bachelors Professional      M             M             1 31.69150
+## 2 Bachelors Professional      M             S             0 32.59102
+## 3 Bachelors Professional      M             M             1 32.34495
+## 4 Bachelors Professional      F             S             0 29.83778
+## 5 Bachelors Professional      F             S             1 29.35931
+## 6 Bachelors Professional      M             S             1 32.36409
+##   NumberCarsOwned NumberChildrenAtHome TotalChildren YearlyIncome AveMonthSpend
+## 1               0                    0             2       137947            89
+## 2               1                    3             3       101141           117
+## 3               1                    3             3        91945           123
+## 4               1                    0             0        86688            50
+## 5               4                    5             5        92771            95
+## 6               1                    0             0       103199            78</code></pre>
 <p>Let’s start with building our model</p>
 <pre class="r"><code>#We&#39;ll use a forward approach. We&#39;ll start from most simple to most complex
 
@@ -872,6 +532,68 @@ summary(model6) </code></pre>
 ## Residual standard error: 15.65 on 16416 degrees of freedom
 ## Multiple R-squared:  0.6709, Adjusted R-squared:  0.6708 
 ## F-statistic:  8365 on 4 and 16416 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Our final model will be Model 5 because it’s the one with the highest adjusted R-squared (and all the variables are significant–contrary to model 4 in which TotalChildren is not significant). However, I want to create a model with the variable gender (since we saw it plays an importan role in the EDA model). Let’s see if we can come up with a 7th model that includes this categorial variable.</p>
+<pre class="r"><code>model7 &lt;- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + Age + factor(Gender), data = features)
+summary(model7) </code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + 
+##     Age + factor(Gender), data = features)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -31.3848  -4.5979   0.1299   4.2143  29.2661 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)           3.398e+01  2.076e-01  163.67   &lt;2e-16 ***
+## YearlyIncome          2.044e-04  1.550e-06  131.83   &lt;2e-16 ***
+## NumberChildrenAtHome  1.119e+01  3.952e-02  283.06   &lt;2e-16 ***
+## Age                  -8.376e-02  5.019e-03  -16.69   &lt;2e-16 ***
+## factor(Gender)M       2.843e+01  1.129e-01  251.80   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 7.109 on 16416 degrees of freedom
+## Multiple R-squared:  0.9321, Adjusted R-squared:  0.9321 
+## F-statistic: 5.632e+04 on 4 and 16416 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>As expected, our the R-squared value increases dramatically. This is why it’s important to do the EDA first, because we can find the features the play a bigger influence in our predicted variable. The model output we got gives us the regression model for Males. Let’s see how it changes for women.</p>
+<pre class="r"><code>features &lt;- features %&gt;%
+  mutate(Gender = relevel(as.factor(Gender), ref = &quot;M&quot;))
+
+model7F &lt;- lm(AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + Age + factor(Gender), data = features)
+summary(model7F) </code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = AveMonthSpend ~ YearlyIncome + NumberChildrenAtHome + 
+##     Age + factor(Gender), data = features)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -31.3848  -4.5979   0.1299   4.2143  29.2661 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)           6.240e+01  2.143e-01  291.14   &lt;2e-16 ***
+## YearlyIncome          2.044e-04  1.550e-06  131.83   &lt;2e-16 ***
+## NumberChildrenAtHome  1.119e+01  3.952e-02  283.06   &lt;2e-16 ***
+## Age                  -8.376e-02  5.019e-03  -16.69   &lt;2e-16 ***
+## factor(Gender)F      -2.843e+01  1.129e-01 -251.80   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 7.109 on 16416 degrees of freedom
+## Multiple R-squared:  0.9321, Adjusted R-squared:  0.9321 
+## F-statistic: 5.632e+04 on 4 and 16416 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>We see that it’s the same coefficient but negative, corroborating the fact that if the client is female, she will spend less on average, in a month.</p>
+<p><span class="math display">\[
+AvgMonthSpend = 62.4 +0.0002(Income) + 11.1(NoChildrenAtHome) - 0.084(Age) + 28.43(Gender=M)
+\]</span></p>
+<p>Finally, we have the following model (insert formula here) and its graph:</p>
+<pre class="r"><code>b &lt;- coef(model7F)
+plot(AveMonthSpend ~ YearlyIncome, data = features)
+curve(b[1] + b[2]*x, col=&quot;skyblue&quot;, lwd=2, add = TRUE)</code></pre>
+<p><img src="Regression_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
 
 

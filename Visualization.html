@@ -301,7 +301,7 @@ $(document).ready(function () {
   <a href="blogpost4.html">Blog Post 4</a>
 </li>
 <li>
-  <a href="progress.html">Progress Insight</a>
+  <a href="progress.html">Other</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -328,10 +328,7 @@ $(document).ready(function () {
 </div>
 
 
-<!-- Tasks:  -->
-<!-- (answer the questions found in the edX part using Python chunks) -->
 <!-- (this is the theory of EDA, follow some steps https://r4ds.had.co.nz/exploratory-data-analysis.html) -->
-<!-- (create a dashboard using Shiny?) -->
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>EDA is an important part of any data analysis. It consists an iterative cycle, where we: (a) generate questions about your data, (b) search for answers by visualising, transforming, and modelling your data; and (c), Use what you learn to refine your questions and/or generate new questions. Here we’ll explore the data to see if we can find any good insights to share with the marketing department.</p>
@@ -359,24 +356,22 @@ library(DT)
 library(pander)
 library(scales)
 library(cowplot)
-library(shiny)</code></pre>
-<pre class="r"><code>customer &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AdvWorksCusts.csv&quot;)
-spend &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AW_AveMonthSpend.csv&quot;)
-bikebuyer &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AW_BikeBuyer.csv&quot;)
-three_datasets &lt;- data.frame(customer, spend, bikebuyer)
-data_clean &lt;- select(three_datasets,-c(CustomerID.1, CustomerID.2))
-missing_values &lt;- sapply(data_clean, function(x) sum(is.na(x))) #it checks number of missing values by column
-data_clean &lt;- select(three_datasets,-c(CustomerID.1, CustomerID.2, Title, MiddleName, Suffix, AddressLine2)) 
-data_clean &lt;- data_clean[!duplicated(data_clean), ] #it removes duplicates</code></pre>
+library(shiny)
+library(scales)</code></pre>
+<pre class="r"><code>customer        &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AdvWorksCusts.csv&quot;)
+spend           &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AW_AveMonthSpend.csv&quot;)
+bikebuyer       &lt;- read_csv(&quot;~/CS 499 Senior Project/datasets/AW_BikeBuyer.csv&quot;)
+three_datasets  &lt;- data.frame(customer, spend, bikebuyer)
+data_clean      &lt;- select(three_datasets,-c(CustomerID.1, CustomerID.2))
+missing_values  &lt;- sapply(data_clean, function(x) sum(is.na(x))) #Checks number of missing values/column
+data_clean      &lt;- select(three_datasets,
+                          -c(CustomerID.1, CustomerID.2, Title, MiddleName, Suffix, AddressLine2)) 
+data_clean      &lt;- data_clean[!duplicated(data_clean), ]         #removes duplicates</code></pre>
 </div>
-<div id="data-insights" class="section level2">
-<h2>Data Insights</h2>
-<pre class="r"><code>#min(data_clean$AveMonthSpend)
-#max(data_clean$AveMonthSpend)
-#mean(data_clean$AveMonthSpend)
-#median(data_clean$AveMonthSpend)
-
-pander(summary(data_clean$AveMonthSpend))</code></pre>
+<div id="average-spending" class="section level2">
+<h2>Average Spending</h2>
+<p>How much are our clients spending?</p>
+<pre class="r"><code>pander(summary(data_clean$AveMonthSpend))</code></pre>
 <table style="width:69%;">
 <colgroup>
 <col width="9%" />
@@ -407,30 +402,89 @@ pander(summary(data_clean$AveMonthSpend))</code></pre>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>#sd(data_clean$AveMonthSpend)</code></pre>
-<p>The distribution of the values in the BikeBuyer column:</p>
-<pre class="r"><code>ggplot(data_clean, aes(x = as.factor(BikeBuyer))) +
-  geom_histogram(binwidth = .5, colour = &quot;blue&quot;, fill = &quot;white&quot;, stat = &#39;count&#39;)</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-5-1.png" width="672" /> Insight: fewer customers have bought bikes than have not bought bikes. We should consider adveritising our bikes more, rather than just the parts.</p>
-<p>mean YearlyIncome by Occupation:</p>
-<pre class="r"><code>ggplot(data_clean, aes(x = forcats::fct_reorder(Occupation, YearlyIncome, .fun=median), y = YearlyIncome))  + 
-  geom_boxplot( width = .5, fill=&quot;tomato3&quot;)  + 
-  theme(axis.text.x = element_text(angle=65, vjust=0.6))</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-6-1.png" width="672" /> Insight: from lowest to highest: Manual, Clerical, Skilled Manual, Professional, Management.</p>
-<p>Average month spend by gender</p>
-<pre class="r"><code>g &lt;- ggplot(data_clean, aes(AveMonthSpend))
-g + geom_density(aes(fill=factor(Gender)), alpha=0.8) + 
-    labs(title = &quot;Density plot&quot;, 
-         subtitle = &quot;&quot;,
+<p>Insight: The average monthly spend is <em>$72.4</em>.</p>
+</div>
+<div id="purchases-of-bikes" class="section level2">
+<h2>Purchases of Bikes</h2>
+<p>The company is interested in raising the number of clients who buy bikes; let’s check our BikeBuyer column for insights.</p>
+<pre class="r"><code>ggplot(data_clean, 
+       aes(x = as.factor(BikeBuyer), 
+           label=..count..)) +
+  geom_histogram(binwidth = .5, 
+                 colour   = &quot;palegreen1&quot;, 
+                 fill     = &quot;palegreen3&quot;, 
+                 stat     = &#39;count&#39;) +
+  labs(title    = &quot;Most of Our Clients Have NOT Bought a Bike&quot;, 
+       subtitle = &quot;The number of clients who have not purchased a bike doubles the number of those who have&quot;, 
+       caption  = &quot;&quot;, 
+       x        = &quot;0: Not a Bike Buyer; 1: Bike Buyer&quot;,
+       y        = &#39;&#39;) + 
+  theme_classic() +
+  geom_text(stat = &#39;count&#39;, 
+            aes(label = comma(..count..), 
+            vjust = -1)) +
+  scale_y_continuous(breaks = NULL, 
+                     labels = comma) </code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Insight: As we can see in the graph, fewer customers have bought bikes than have not bought bikes. We should consider adveritising our bikes more, rather than just the parts.</p>
+</div>
+<div id="income" class="section level2">
+<h2>Income:</h2>
+<pre class="r"><code>means &lt;- tapply(data_clean$YearlyIncome, INDEX = data_clean$Occupation, FUN = mean) #Gets the mean by group
+
+ggplot(data_clean, 
+       aes(x = forcats::fct_reorder(Occupation, YearlyIncome, .fun=median), y = YearlyIncome))  + 
+  geom_boxplot( width = .5, 
+                fill=&quot;palegreen3&quot;)  + 
+  theme(axis.text.x = element_text(angle = 0, 
+                                   vjust = 0.6)) +
+  scale_y_continuous(breaks = means,
+                     labels = dollar) + 
+  labs(title    = &quot;Our Clients Yearly Income Vary a Lot&quot;, 
+       subtitle = &quot;Our clients with the highest income are in the Managerial Occupations, while the lowest income are in the Manual Occupation&quot;, 
+       caption  = &quot;&quot;, 
+       x        = &quot;Occupation Family&quot;,
+       y        = &#39;Yearly Income&#39;) + 
+  theme_classic() </code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Insight: we have clients from all occupational families. Their Yearly Income from lowest to highest is: Manual, Clerical, Skilled Manual, Professional, Management.</p>
+</div>
+<div id="gender" class="section level2">
+<h2>Gender</h2>
+<pre class="r"><code>ggplot(data_clean, aes(AveMonthSpend)) +
+  geom_density(aes(fill=factor(Gender)), 
+                 alpha=0.8) + 
+    labs(title = &quot;Males Spend More&quot;, 
+         subtitle = &quot;On average, males spend more each month than women do&quot;,
          caption = &quot;Source: mpg&quot;,
          x = &quot;Average Month Spend&quot;,
-         fill = &quot;Gender&quot;)</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-7-1.png" width="672" /> INsight: Males on average tend to spend more (age between 25-45, find a way to divide it between &gt;25, 25-45, 46&lt;).</p>
-<pre class="r"><code>ggplot(data_clean, aes(x = MaritalStatus, y = AveMonthSpend))  + 
-  geom_bar(stat = &quot;identity&quot;, width = .5, fill=&quot;tomato3&quot;)  + 
-  theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
-  facet_wrap(~Gender) </code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-8-1.png" width="672" /> INsight: Married Male spend more People with no children at home spend more.</p>
+         y = &#39;Density&#39;,
+         fill = &quot;Gender&quot;) + 
+  scale_y_continuous(breaks = NULL) +
+  theme_classic()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Insight: Males on average tend to spend more; the “sweet spot” or a range in which both males and females spend equally seems to be “$50-75”; something intersting is that only males spend more than “$120” a month.</p>
+</div>
+<div id="family" class="section level2">
+<h2>Family</h2>
+<pre class="r"><code>ggplot(data_clean, 
+       aes(x = MaritalStatus, 
+           y = AveMonthSpend))  + 
+  geom_bar(stat = &quot;identity&quot;, 
+           width = .5, 
+           aes(fill = Gender))  + 
+  theme(axis.text.x = element_text(angle=0, 
+                                   vjust=0.6)) + 
+  facet_grid(Gender ~ HomeOwnerFlag) +
+  scale_y_continuous(labels = dollar) + 
+  labs(title    = &quot;Sum of Total Purchases Made in Month by Marital Status, Gender and Ownership of House&quot;, 
+       subtitle = &quot;Married males who own a house give us the highest return while married women that don&#39;t own a house are the lowest&quot;, 
+       caption  = &quot;&quot;, 
+       x        = &quot;M: Married; S: Single&quot;,
+       y        = &#39;Total Purchase&#39;) + 
+  theme_classic()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Insight: Married males who own a house give us the highest return while married women that don’t own a house are the lowest</p>
 </div>
 
 
