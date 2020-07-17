@@ -379,6 +379,12 @@ div.tocify {
   <a href="blogpost2.html">Blog Post 2</a>
 </li>
 <li>
+  <a href="blogpost3.html">Blog Post 3</a>
+</li>
+<li>
+  <a href="blogpost4.html">Blog Post 4</a>
+</li>
+<li>
   <a href="progress.html">Progress Insight</a>
 </li>
       </ul>
@@ -578,8 +584,8 @@ Time &lt;- c(ali_time, bill_time, dave_time, hasan_time, louis_time, sarah_time)
 Speed &lt;- c(ali_speed, bill_speed, dave_speed, hasan_speed, louis_speed, sarah_speed)
 transcripts_stats &lt;- data.frame(Comedian, Unique_words, Total_words, Time, Speed)
 datatable(transcripts_stats)</code></pre>
-<div id="htmlwidget-074b841c78964449b466" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-074b841c78964449b466">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Ali Wong","Bill Burr","Dave Chapelle","Hasan Minhaj","Louis C.K.","Sarah Silverman"],[850,1422,1078,1371,824,840],[988,1918,1442,1890,1058,1030],[60,80,67,73,58,72],[16,23,21,25,18,14]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Comedian<\/th>\n      <th>Unique_words<\/th>\n      <th>Total_words<\/th>\n      <th>Time<\/th>\n      <th>Speed<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-5d4dffcddcf399471b9a" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5d4dffcddcf399471b9a">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Ali Wong","Bill Burr","Dave Chapelle","Hasan Minhaj","Louis C.K.","Sarah Silverman"],[850,1422,1078,1371,824,840],[988,1918,1442,1890,1058,1030],[60,80,67,73,58,72],[16,23,21,25,18,14]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Comedian<\/th>\n      <th>Unique_words<\/th>\n      <th>Total_words<\/th>\n      <th>Time<\/th>\n      <th>Speed<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>transcripts_stats &lt;- transcripts_stats %&gt;% 
   mutate(highlight_sarah = ifelse(Comedian == &#39;Sarah Silverman&#39;, T, F))
 
@@ -626,8 +632,8 @@ sarah_bad &lt;- length(which(sarah_bag == &quot;fuck&quot;)) + length(which(sara
 Swear_words &lt;- c(ali_bad, bill_bad, dave_bad, hasan_bad, louis_bad, sarah_bad)
 transcripts_stats &lt;- data.frame(Comedian, Unique_words, Total_words, Time, Swear_words)
 datatable(transcripts_stats)</code></pre>
-<div id="htmlwidget-da323c2be7b1ce171116" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-da323c2be7b1ce171116">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Ali Wong","Bill Burr","Dave Chapelle","Hasan Minhaj","Louis C.K.","Sarah Silverman"],[850,1422,1078,1371,824,840],[988,1918,1442,1890,1058,1030],[60,80,67,73,58,72],[10,43,25,14,18,11]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Comedian<\/th>\n      <th>Unique_words<\/th>\n      <th>Total_words<\/th>\n      <th>Time<\/th>\n      <th>Swear_words<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-38044f6176d8b6227cd4" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-38044f6176d8b6227cd4">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Ali Wong","Bill Burr","Dave Chapelle","Hasan Minhaj","Louis C.K.","Sarah Silverman"],[850,1422,1078,1371,824,840],[988,1918,1442,1890,1058,1030],[60,80,67,73,58,72],[10,43,25,14,18,11]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Comedian<\/th>\n      <th>Unique_words<\/th>\n      <th>Total_words<\/th>\n      <th>Time<\/th>\n      <th>Swear_words<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>transcripts_stats &lt;- transcripts_stats %&gt;% 
   mutate(highlight_sarah = ifelse(Comedian == &#39;Sarah Silverman&#39;, T, F))
 ggplot(transcripts_stats, 
@@ -668,8 +674,8 @@ transcripts_stats &lt;- data.frame(Comedian, Unique_words, Total_words, Time, Sw
 transcripts_stats &lt;- transcripts_stats %&gt;% 
   mutate(highlight_sarah = ifelse(Comedian == &#39;Sarah Silverman&#39;, T, F))
 datatable(transcripts_stats)</code></pre>
-<div id="htmlwidget-bd0725cac56e100bdb63" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-bd0725cac56e100bdb63">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Ali Wong","Bill Burr","Dave Chapelle","Hasan Minhaj","Louis C.K.","Sarah Silverman"],[850,1422,1078,1371,824,840],[988,1918,1442,1890,1058,1030],[60,80,67,73,58,72],[10,43,25,14,18,11],[-0.653782593957612,-0.872015907661684,-1.10298846462152,0.410710390487719,-0.059055960184403,0.305965493591161],[false,false,false,false,false,true]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Comedian<\/th>\n      <th>Unique_words<\/th>\n      <th>Total_words<\/th>\n      <th>Time<\/th>\n      <th>Swear_words<\/th>\n      <th>Sentiment<\/th>\n      <th>highlight_sarah<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-627a1c2630c565dd4c4d" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-627a1c2630c565dd4c4d">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Ali Wong","Bill Burr","Dave Chapelle","Hasan Minhaj","Louis C.K.","Sarah Silverman"],[850,1422,1078,1371,824,840],[988,1918,1442,1890,1058,1030],[60,80,67,73,58,72],[10,43,25,14,18,11],[-0.653782593957612,-0.872015907661684,-1.10298846462152,0.410710390487719,-0.059055960184403,0.305965493591161],[false,false,false,false,false,true]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Comedian<\/th>\n      <th>Unique_words<\/th>\n      <th>Total_words<\/th>\n      <th>Time<\/th>\n      <th>Swear_words<\/th>\n      <th>Sentiment<\/th>\n      <th>highlight_sarah<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>ggplot(transcripts_stats, 
        aes(x = Comedian, 
            y = Sentiment, 

@@ -295,6 +295,12 @@ $(document).ready(function () {
   <a href="blogpost2.html">Blog Post 2</a>
 </li>
 <li>
+  <a href="blogpost3.html">Blog Post 3</a>
+</li>
+<li>
+  <a href="blogpost4.html">Blog Post 4</a>
+</li>
+<li>
   <a href="progress.html">Progress Insight</a>
 </li>
       </ul>
@@ -371,18 +377,18 @@ testData  &lt;- features[ind == 2, ] # test </code></pre>
 <div id="v.-checking-tree-and-results" class="section level2">
 <h2>V. Checking tree and results</h2>
 <pre class="r"><code>print(tree)</code></pre>
-<pre><code>## n= 9905 
+<pre><code>## n= 9783 
 ## 
 ## node), split, n, loss, yval, (yprob)
 ##       * denotes terminal node
 ## 
-##  1) root 9905 3243 0 (0.6725896 0.3274104)  
-##    2) NumberChildrenAtHome&lt; 1.5 7371 1495 0 (0.7971781 0.2028219) *
-##    3) NumberChildrenAtHome&gt;=1.5 2534  786 1 (0.3101815 0.6898185)  
-##      6) AveMonthSpend&lt; 87.5 908  417 1 (0.4592511 0.5407489)  
-##       12) MaritalStatus=M 338  115 0 (0.6597633 0.3402367) *
-##       13) MaritalStatus=S 570  194 1 (0.3403509 0.6596491) *
-##      7) AveMonthSpend&gt;=87.5 1626  369 1 (0.2269373 0.7730627) *</code></pre>
+##  1) root 9783 3291 0 (0.6636001 0.3363999)  
+##    2) NumberChildrenAtHome&lt; 1.5 7185 1474 0 (0.7948504 0.2051496) *
+##    3) NumberChildrenAtHome&gt;=1.5 2598  781 1 (0.3006159 0.6993841)  
+##      6) AveMonthSpend&lt; 83.5 812  374 1 (0.4605911 0.5394089)  
+##       12) MaritalStatus=M 322  110 0 (0.6583851 0.3416149) *
+##       13) MaritalStatus=S 490  162 1 (0.3306122 0.6693878) *
+##      7) AveMonthSpend&gt;=83.5 1786  407 1 (0.2278835 0.7721165) *</code></pre>
 <pre class="r"><code>rpart.plot(tree, extra = 4)     # extra = 4: probability of observations by class</code></pre>
 <p><img src="Classification_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code>printcp(tree)                   # stats of results</code></pre>
@@ -393,14 +399,14 @@ testData  &lt;- features[ind == 2, ] # test </code></pre>
 ## Variables actually used in tree construction:
 ## [1] AveMonthSpend        MaritalStatus        NumberChildrenAtHome
 ## 
-## Root node error: 3243/9905 = 0.32741
+## Root node error: 3291/9783 = 0.3364
 ## 
-## n= 9905 
+## n= 9783 
 ## 
 ##         CP nsplit rel error  xerror     xstd
-## 1 0.296639      0   1.00000 1.00000 0.014401
-## 2 0.016651      1   0.70336 0.70336 0.012921
-## 3 0.010000      3   0.67006 0.67468 0.012731</code></pre>
+## 1 0.314798      0   1.00000 1.00000 0.014200
+## 2 0.015497      1   0.68520 0.68520 0.012658
+## 3 0.010000      3   0.65421 0.65968 0.012489</code></pre>
 <pre class="r"><code>plotcp(tree)                    # evolution of error as the number of nodes increases</code></pre>
 <p><img src="Classification_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
 <p>Here we see that N is the number of observations, 9,808. In the first line, we see that most observations/clients (66.8%) DIDN’T buy a bike (BikeBuyer = 0), and so on. For the company, it’s interesting to see that the person that will likely buy a bike the most is someone who is married, with more than 2 children at home.</p>
@@ -416,14 +422,14 @@ printcp(pruneTree)</code></pre>
 ## Variables actually used in tree construction:
 ## [1] AveMonthSpend        MaritalStatus        NumberChildrenAtHome
 ## 
-## Root node error: 3243/9905 = 0.32741
+## Root node error: 3291/9783 = 0.3364
 ## 
-## n= 9905 
+## n= 9783 
 ## 
 ##         CP nsplit rel error  xerror     xstd
-## 1 0.296639      0   1.00000 1.00000 0.014401
-## 2 0.016651      1   0.70336 0.70336 0.012921
-## 3 0.010000      3   0.67006 0.67468 0.012731</code></pre>
+## 1 0.314798      0   1.00000 1.00000 0.014200
+## 2 0.015497      1   0.68520 0.68520 0.012658
+## 3 0.010000      3   0.65421 0.65968 0.012489</code></pre>
 <p>As you can see, printcp(pruneTree) and Tree is the same thus showing that the first command had already pruned (or didn’t) where it had to.</p>
 </div>
 <div id="vii.-predict-who-will-buy-bikes-on-test-data." class="section level2">
@@ -435,15 +441,15 @@ testTree &lt;- predict(tree, newdata = testData, type = &#39;class&#39;)
 table(testTree, testData$BikeBuyer)</code></pre>
 <pre><code>##         
 ## testTree    0    1
-##        0 3948 1077
-##        1  354 1137</code></pre>
+##        0 4071 1057
+##        1  401 1109</code></pre>
 <p>There we saw that our model predicted 4,024 people who were not buyers correctly, and 1051 who were did buy but we classifed them as not. Same, with the other row.</p>
 </div>
 <div id="viii.-evaluating-the-model." class="section level2">
 <h2>VIII. Evaluating the model.</h2>
 <pre class="r"><code>## Let&#39;s calculate the % of correct answers 
  sum(testTree == testData$BikeBuyer) / length(testData$BikeBuyer)*100</code></pre>
-<pre><code>## [1] 78.03867</code></pre>
+<pre><code>## [1] 78.03555</code></pre>
 <p>it shows that we have 78.91% of accurate predictions!</p>
 </div>
 
